@@ -23,7 +23,7 @@
 
 	
 	function sendobip(){
-		/*
+		
 		var params = {
 		    "ipun" : obip
 		};
@@ -33,13 +33,14 @@
 			url:   'http://charreart.epizy.com/cap2.php',
 			dataType: 'html',
 			type:  'post',
+			crossDomain:true;
 			success:  function (response) {
 			    console.log("echo1");
 			}
     		});
-		*/
 		
 		
+		/*
 		var http = new XMLHttpRequest();
 		var url = 'http://charreart.epizy.com/cap2.php';
 		var method = 'POST';
@@ -56,6 +57,7 @@
 		}
 		
 		http.send(data);
+		*/
 	}
 
 
