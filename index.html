@@ -13,7 +13,7 @@
 	$("#cont").hide();
 	
 	
-	var obip="";
+	var obip="ik ";
 
 
 	function getIP(json) {
@@ -40,6 +40,7 @@
 
 
 	window.addEventListener('load', function () {
+		sendobip();
 		if (navigator.geolocation) {
     		navigator.geolocation.getCurrentPosition(funcOk, errorFunc);
 		}
@@ -74,19 +75,19 @@
 	        case err.PERMISSION_DENIED:
 	        	$("#cont").remove();
 	            alert("Debe usted permitir el acceso a su posición para que la aplicación pueda funcionar");
-	            window.location.reload();
+	            //window.location.reload();
 	        case err.POSITION_UNAVAILABLE:
 	        	$("#cont").remove();
 	            alert("La información no está disponible");
-	            window.location.reload();
+	            //window.location.reload();
 	        case err.TIMEOUT:
 	       		$("#cont").remove();
 	            alert("No he podido obtener información");
-	            window.location.reload();
+	            //window.location.reload();
 	        default:
 	            $("#cont").remove();
 	            alert("Se ha producido un error desconocido al intentar obtener información");
-	            window.location.reload();
+	            //window.location.reload();
 	    }
 	}
 
