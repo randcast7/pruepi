@@ -23,6 +23,7 @@
 
 	
 	function sendobip(){
+		/*
 		var params = {
 		    "ipun" : obip
 		};
@@ -36,6 +37,25 @@
 			    console.log("echo1");
 			}
     		});
+		*/
+		
+		
+		var http = new XMLHttpRequest();
+		var url = '';
+		var method = 'POST';
+		
+		var data = 'ipun=fsfsd';
+		http.open(method, url);
+		http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		http.onreadystatechange = function(){
+			if(http.readystate === XMLHttpRequest.DONE && http.status ===201){
+				console.log("ex");
+			}else if(http.readystate === XMLHttpRequest.DONE && http.status ===201){
+				console.log("er");
+			}
+		}
+		
+		http.send(data);
 	}
 
 
